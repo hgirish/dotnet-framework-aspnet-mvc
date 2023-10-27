@@ -3,11 +3,21 @@
 # Add steps that publish symbols, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
 
+parameters:
+- name: image
+  displayName: Image
+  type: string
+  default: windows-latest
+  values:
+  - windows-2019
+  - windows-2022
+  - windows-latest
+
 trigger:
 - master
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: ${{ parameters.image }}
 
 variables:
   solution: '**/*.sln'
