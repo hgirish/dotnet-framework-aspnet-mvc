@@ -19,7 +19,7 @@ parameters:
 - name: webAppName
   displayName: App Service Web App name
   type: string
-  default: ''
+  default: '<Skip Deployment>'
 - name: deploy
   displayName: Deploy website
   type: boolean
@@ -48,10 +48,10 @@ variables:
 
 jobs:
 - job: buildAndDeploy
-  ${{ if gt(length(parameters.webAppName),0) }}:
-    displayName: Build & deploy website
-  ${{ else }}:
+  ${{ if eq(parameters.webAppName,'<Skip Deployment>') }}:
     displayName: Build website
+  ${{ else }}:
+    displayName: Build & deploy website
 
   pool:
     vmImage: '${{ parameters.image }}'
@@ -79,7 +79,7 @@ jobs:
       platform: '$(buildPlatform)'
       configuration: '$(buildConfiguration)'
 
-  - ${{ if gt(length(parameters.webAppName),0) }}:
+  - ${{ if ne(parameters.webAppName,'<Skip Deployment>') }}:
     - task: AzureRmWebAppDeployment@4
       displayName: Deploy website
       inputs:
