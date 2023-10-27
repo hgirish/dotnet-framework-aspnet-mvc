@@ -20,10 +20,6 @@ parameters:
   displayName: App Service Web App name
   type: string
   default: '<Skip Deployment>'
-- name: deploy
-  displayName: Deploy website
-  type: boolean
-  default: false
 - name: publish
   displayName: Publish artifact
   type: boolean
