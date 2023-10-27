@@ -16,6 +16,10 @@ parameters:
   displayName: Deploy website
   type: boolean
   default: false
+- name: archive
+  displayName: Archive website
+  type: boolean
+  default: false
 
 trigger:
 - master
@@ -68,11 +72,16 @@ jobs:
         Package: $(Pipeline.Workspace)/**/*.zip
         WebAppName: 'website20231026154549'
 
+  - ${{ if parameters.archive }}:
     - task: ArchiveFiles@2
-      displayName: Archive website
+      displayName: Create website archive
       inputs:
         rootFolderOrFile: '$(build.artifactStagingDirectory)'
         includeRootFolder: false
         archiveType: zip
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
         replaceExistingArchive: true
+
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      displayName: Publish archive as artifact
+      artifact: $(terraformArtifactPrefix)$(System.PlanId)
