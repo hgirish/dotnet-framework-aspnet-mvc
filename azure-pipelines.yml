@@ -32,6 +32,14 @@ parameters:
 trigger:
 - master
 
+schedules:
+- cron: '0 12 * * Fri'
+  displayName: 'Weekly build (UTC)'
+  always: 'true' # Run if there are no changes
+  branches:
+    include:
+    - master
+
 variables:
   package: $(Build.ArtifactStagingDirectory)/SimpleFrameworkApp.zip
   solution: '**/*.sln'
