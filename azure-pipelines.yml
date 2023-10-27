@@ -12,12 +12,20 @@ parameters:
   - windows-2019
   - windows-2022
   - windows-latest
+- name: serviceConnection
+  displayName: App Service connection
+  type: string
+  default: my-azure-subscription
+- name: webAppName
+  displayName: App Service Web App name
+  type: string
+  default: ''
 - name: deploy
   displayName: Deploy website
   type: boolean
   default: false
-- name: archive
-  displayName: Archive website
+- name: publish
+  displayName: Publish artifact
   type: boolean
   default: false
 
@@ -25,6 +33,7 @@ trigger:
 - master
 
 variables:
+  package: $(Build.ArtifactStagingDirectory)/SimpleFrameworkApp.zip
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
@@ -62,26 +71,17 @@ jobs:
       platform: '$(buildPlatform)'
       configuration: '$(buildConfiguration)'
 
-  - ${{ if parameters.deploy }}:
+  - ${{ if gt(length(parameters.webAppName),0) }}:
     - task: AzureRmWebAppDeployment@4
       displayName: Deploy website
       inputs:
-        azureSubscription: my-azure-subscription
+        azureSubscription: ${{ parameters.serviceConnection }}
         appType: 'webApp'
         DeploymentType: "webDeploy"
-        Package: $(Pipeline.Workspace)/**/*.zip
-        WebAppName: 'website20231026154549'
+        Package: $(package)
+        WebAppName: '${{ parameters.webAppName }}'
 
-  - ${{ if parameters.archive }}:
-    - task: ArchiveFiles@2
-      displayName: Create website archive
-      inputs:
-        rootFolderOrFile: '$(build.artifactStagingDirectory)'
-        includeRootFolder: false
-        archiveType: zip
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-        replaceExistingArchive: true
-
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-      displayName: Publish archive as artifact
-      artifact: $(terraformArtifactPrefix)$(System.PlanId)
+  - ${{ if parameters.publish }}:
+    - publish: $(package)
+      displayName: Publish artifact
+      artifact: website-$(System.PlanId)
