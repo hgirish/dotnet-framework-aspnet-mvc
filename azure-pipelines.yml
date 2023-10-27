@@ -48,7 +48,7 @@ variables:
 
 jobs:
 - job: buildAndDeploy
-  ${{ if parameters.deploy }}:
+  ${{ if gt(length(parameters.webAppName),0) }}:
     displayName: Build & deploy website
   ${{ else }}:
     displayName: Build website
