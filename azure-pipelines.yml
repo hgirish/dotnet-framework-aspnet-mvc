@@ -5,7 +5,7 @@
 
 parameters:
 - name: image
-  displayName: Image
+  displayName: Agent image
   type: string
   default: windows-latest
   values:
@@ -16,39 +16,43 @@ parameters:
 trigger:
 - master
 
-pool:
-  vmImage: ${{ parameters.image }}
-
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
-steps:
-- task: NuGetToolInstaller@1
+jobs:
+- job: Build & deploy website
+  displayName: Build job
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+  pool:
+    vmImage: '${{ parameters.image }}'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  steps:
+  - task: NuGetToolInstaller@1
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  - task: NuGetCommand@2
+    inputs:
+      restoreSolution: '$(solution)'
 
-- task: AzureRmWebAppDeployment@4
-  displayName: Deploy website
-  inputs:
-    azureSubscription: my-azure-subscription
-    appType: 'webApp'
-    DeploymentType: "webDeploy"
-    Package: $(Pipeline.Workspace)/**/*.zip
-    WebAppName: 'website20231026154549'
-    #ResourceGroupName: # string. Required when DeployToSlotOrASEFlag = true. Resource group. 
+  - task: VSBuild@1
+    inputs:
+      solution: '$(solution)'
+      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
+
+  - task: VSTest@2
+    inputs:
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
+
+  - task: AzureRmWebAppDeployment@4
+    displayName: Deploy website
+    inputs:
+      azureSubscription: my-azure-subscription
+      appType: 'webApp'
+      DeploymentType: "webDeploy"
+      Package: $(Pipeline.Workspace)/**/*.zip
+      WebAppName: 'website20231026154549'
+      #ResourceGroupName: # string. Required when DeployToSlotOrASEFlag = true. Resource group. 
