@@ -25,6 +25,8 @@ parameters:
   type: boolean
   default: false
 
+name: $(Date:yyyyMMdd)$(Rev:.r)-$(Build.DefinitionVersion)-$(SourceBranchName)-${{ lower(parameters.image) }}-$(Build.BuildId)
+
 trigger:
 - master
 
