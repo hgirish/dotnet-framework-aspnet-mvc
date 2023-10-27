@@ -12,6 +12,10 @@ parameters:
   - windows-2019
   - windows-2022
   - windows-latest
+- name: deploy
+  displayName: Deploy website
+  type: boolean
+  default: false
 
 trigger:
 - master
@@ -30,12 +34,15 @@ jobs:
 
   steps:
   - task: NuGetToolInstaller@1
+    displayName: Install NuGet
 
   - task: NuGetCommand@2
+    displayName: NuGet restore
     inputs:
       restoreSolution: '$(solution)'
 
   - task: VSBuild@1
+    displayName: Build website
     inputs:
       solution: '$(solution)'
       msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
@@ -43,16 +50,26 @@ jobs:
       configuration: '$(buildConfiguration)'
 
   - task: VSTest@2
+    displayName: Test website
     inputs:
       platform: '$(buildPlatform)'
       configuration: '$(buildConfiguration)'
 
-  - task: AzureRmWebAppDeployment@4
-    displayName: Deploy website
-    inputs:
-      azureSubscription: my-azure-subscription
-      appType: 'webApp'
-      DeploymentType: "webDeploy"
-      Package: $(Pipeline.Workspace)/**/*.zip
-      WebAppName: 'website20231026154549'
-      #ResourceGroupName: # string. Required when DeployToSlotOrASEFlag = true. Resource group. 
+  - ${{ if parameters.deploy }}:
+    - task: AzureRmWebAppDeployment@4
+      displayName: Deploy website
+      inputs:
+        azureSubscription: my-azure-subscription
+        appType: 'webApp'
+        DeploymentType: "webDeploy"
+        Package: $(Pipeline.Workspace)/**/*.zip
+        WebAppName: 'website20231026154549'
+
+    - task: ArchiveFiles@2
+      displayName: Archive website
+      inputs:
+        rootFolderOrFile: '$(build.artifactStagingDirectory)'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        replaceExistingArchive: true
