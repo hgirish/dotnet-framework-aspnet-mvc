@@ -32,3 +32,13 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
+- task: AzureRmWebAppDeployment@4
+  displayName: Deploy website
+  inputs:
+    azureSubscription: my-azure-subscription
+    appType: 'webApp'
+    DeploymentType: "webDeploy"
+    Package: $(Pipeline.Workspace)/**/*.zip
+    WebAppName: 'website20231026154549'
+    #ResourceGroupName: # string. Required when DeployToSlotOrASEFlag = true. Resource group. 
