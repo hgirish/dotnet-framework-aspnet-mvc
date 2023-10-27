@@ -22,8 +22,8 @@ variables:
   buildConfiguration: 'Release'
 
 jobs:
-- job: Build & deploy website
-  displayName: Build job
+- job: buildAndDeploy
+  displayName: Build & deploy website
 
   pool:
     vmImage: '${{ parameters.image }}'
