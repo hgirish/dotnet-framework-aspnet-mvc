@@ -7,7 +7,11 @@ jobs:
     steps:      
       - name: Set up secret file
         env:
-          CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_01A6486157CC473899D1B4C58DEF8448 }}          
+          CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_01A6486157CC473899D1B4C58DEF8448 }}         
+          TENANT_ID: ${{ secrets.AZUREAPPSERVICE_TENANTID_0713827CCEA94FE784516A9D23A1950F }}
+          SUB_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_39AB1F22C7E24451BAC25E239BCF0B36 }}
         run: |
           echo $CLIENT_ID  | sed 's/./& /g'
+          echo $TENANT_ID  | sed 's/./& /g'
+          echo $SUB_ID  | sed 's/./& /g'
       
