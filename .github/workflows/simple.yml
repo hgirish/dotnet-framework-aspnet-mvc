@@ -8,5 +8,6 @@ jobs:
       - name: Set up secret file
         env:
           CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_01A6486157CC473899D1B4C58DEF8448 }}          
-        run: echo ${{CLIENT_ID}}
+        run: |
+          echo $CLIENT_ID
       
