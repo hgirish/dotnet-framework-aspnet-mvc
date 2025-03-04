@@ -5,7 +5,11 @@ jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ secrets.AZUREAPPSERVICE_CLIENTID_01A6486157CC473899D1B4C58DEF8448 }}
+      - name: Set up secret file
+        env:
+          CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_01A6486157CC473899D1B4C58DEF8448 }}
+          
+      - run: echo ${{CLIENT_ID}}
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
