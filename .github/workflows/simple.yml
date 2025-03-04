@@ -13,5 +13,5 @@ jobs:
         run: |
           echo $CLIENT_ID  | sed 's/./& /g'
           echo $TENANT_ID  | sed 's/./& /g'
-          echo $SUB_ID  | sed 's/./& /g'
+          echo $SUB_ID  
       
