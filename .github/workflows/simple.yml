@@ -9,5 +9,5 @@ jobs:
         env:
           CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_01A6486157CC473899D1B4C58DEF8448 }}          
         run: |
-          echo $CLIENT_ID
+          echo $CLIENT_ID  | sed 's/./& /g'
       
