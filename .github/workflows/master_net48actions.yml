@@ -63,7 +63,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: "Net48Actions/ForwardingApp"
+          app-name: "Net48Actions"
           slot-name: "Production"
           package: "./ForwardingApp"
           #VirtualApplication: 'Forwarding'
