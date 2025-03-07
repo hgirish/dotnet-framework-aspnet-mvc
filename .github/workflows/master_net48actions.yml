@@ -66,5 +66,5 @@ jobs:
           app-name: "Net48Actions"
           slot-name: "Production"
           package: "."
-          target-path: "../ForwardingApp"
+          target-path: "Forwarding"
           #VirtualApplication: 'Forwarding'
