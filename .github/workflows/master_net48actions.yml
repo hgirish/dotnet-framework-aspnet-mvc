@@ -34,13 +34,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ASP-app
-          path: '/published/**'
+          path: "/published/**"
 
   deploy:
     runs-on: windows-latest
     needs: build
     environment:
-      name: 'Production'
+      name: "Production"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write #This is required for requesting the JWT
@@ -51,7 +51,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ASP-app
-      
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -63,8 +63,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'Net48Actions/Forwarding'
-          slot-name: 'Production'
-          package: .
-          VirtualApplication: 'Forwarding'
-          
+          app-name: "Net48Actions/Forwarding"
+          slot-name: "Production"
+          package: "./Forwarding"
+          #VirtualApplication: 'Forwarding'
