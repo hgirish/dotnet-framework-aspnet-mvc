@@ -65,5 +65,5 @@ jobs:
         with:
           app-name: "Net48Actions"
           slot-name: "Production"
-          package: "ForwardingApp"
+          package: "./ForwardingApp"
           #VirtualApplication: 'Forwarding'
